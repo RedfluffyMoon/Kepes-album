@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFERNO — Képalbum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400&family=JetBrains+Mono:wght@300;400;600&family=Archivo:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0604;
+    --bg-soft: #1a0d07;
+    --ink: #fef3c7;
+    --ink-soft: #fde68a;
+    --ember: #fbbf24;
+    --gold: #f59e0b;
+    --orange: #ea580c;
+    --blood: #dc2626;
+    --crimson: #991b1b;
+    --shadow: #450a0a;
+    --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--ink);
+    font-family: 'Archivo', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: var(--grain);
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 1000;
+    mix-blend-mode: overlay;
+  }
+
+  /* Animated background ember glow */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .ambient::before, .ambient::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    animation: drift 20s ease-in-out infinite;
+  }
+  .ambient::before {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--blood), transparent 70%);
+    top: -200px; left: -150px;
+  }
+  .ambient::after {
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, var(--gold), transparent 70%);
+    bottom: -250px; right: -200px;
+    animation-delay: -10s;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(80px,-60px) scale(1.15); }
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(251,191,36,0.15);
+    backdrop-filter: blur(12px);
+    background: rgba(10,6,4,0.4);
+    position: sticky;
+    top: 0;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-mark {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--ember), var(--blood));
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+    position: relative;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 12px var(--orange)); }
+    50% { filter: drop-shadow(0 0 24px var(--blood)); }
+  }
+  .brand-text {
+    font-family: 'Bodoni Moda', serif;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(180deg, var(--ember) 0%, var(--orange) 60%, var(--blood) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .brand-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+  nav {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+  nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  nav a:hover { color: var(--ember); }
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 0;
+    width: 0; height: 1px;
+    background: var(--ember);
+    transition: width 0.3s;
+  }
+  nav a:hover::after { width: 100%; }
+
+  .counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ember);
+    padding: 8px 14px;
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 999px;
+    background: rgba(251,191,36,0.05);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 2;
+    padding: 80px 48px 60px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 60px;
+    align-items: end;
+    min-height: 60vh;
+  }
+  .hero-title {
+    font-family: 'Bodoni Moda', serif;
+    font-size: clamp(60px, 11vw, 180px);
+    line-height: 0.85;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .hero-title .accent {
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(180deg, var(--ember), var(--orange), var(--blood));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+  }
+  .hero-title .line2 {
+    display: block;
+    margin-left: 0.3em;
+  }
+  .hero-side {
+    border-left: 1px solid rgba(251,191,36,0.2);
+    padding-left: 32px;
+    padding-bottom: 40px;
+  }
+  .hero-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 380px;
+    margin-bottom: 28px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+  }
+  .stat-num {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ember);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* TOOLBAR */
+  .toolbar {
+    position: relative;
+    z-index: 2;
+    margin: 40px 48px;
+    padding: 24px 32px;
+    background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(251,191,36,0.05));
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .upload-btn {
+    background: linear-gradient(135deg, var(--ember), var(--blood));
+    color: var(--bg-deep);
+    border: none;
+    padding: 16px 32px;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .upload-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--blood), var(--ember));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .upload-btn span { position: relative; z-index: 1; }
+  .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(220,38,38,0.4); }
+  .upload-btn:hover::before { opacity: 1; }
+  .upload-btn svg { position: relative; z-index: 1; }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    background: transparent;
+    border: 1px solid rgba(251,191,36,0.25);
+    color: var(--ink-soft);
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.3s;
+  }
+  .filter-chip:hover { border-color: var(--ember); color: var(--ember); }
+  .filter-chip.active {
+    background: var(--ember);
+    color: var(--bg-deep);
+    border-color: var(--ember);
+    font-weight: 700;
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.3);
+    padding: 4px;
+    border-radius: 4px;
+  }
+  .view-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .view-btn.active { background: var(--gold); color: var(--bg-deep); }
+
+  /* GALLERY */
+  .gallery {
+    position: relative;
+    z-index: 2;
+    margin: 0 48px 80px;
+    column-count: 4;
+    column-gap: 20px;
+  }
+  .gallery.grid-view {
+    column-count: unset;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .photo {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: pointer;
+    background: var(--bg-soft);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    border: 1px solid rgba(251,191,36,0.1);
+  }
+  .gallery.grid-view .photo {
+    aspect-ratio: 1;
+    margin-bottom: 0;
+  }
+  .photo:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: rgba(251,191,36,0.5);
+    box-shadow: 0 20px 50px rgba(220,38,38,0.25), 0 0 0 1px rgba(251,191,36,0.4);
+  }
+  .photo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .photo:hover img { transform: scale(1.08); }
+  .photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(10,6,4,0.95));
+    opacity: 0;
+    transition: opacity 0.4s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+  .photo:hover .photo-overlay { opacity: 1; }
+  .photo-title {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ember);
+    margin-bottom: 6px;
+    transform: translateY(20px);
+    transition: transform 0.4s 0.1s;
+  }
+  .photo-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(20px);
+    transition: transform 0.4s 0.15s;
+  }
+  .photo:hover .photo-title, .photo:hover .photo-meta { transform: translateY(0); }
+
+  .photo-tag {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(10,6,4,0.85);
+    backdrop-filter: blur(8px);
+    color: var(--ember);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 5px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    border: 1px solid rgba(251,191,36,0.3);
+    z-index: 2;
+  }
+
+  .photo-fav {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    background: rgba(10,6,4,0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    transition: all 0.3s;
+  }
+  .photo-fav:hover { background: var(--blood); border-color: var(--blood); transform: scale(1.1); }
+  .photo-fav.active { background: var(--blood); border-color: var(--blood); }
+  .photo-fav svg { width: 14px; height: 14px; stroke: var(--ember); fill: none; transition: fill 0.3s; }
+  .photo-fav.active svg { fill: var(--ember); stroke: var(--ember); }
+
+  /* UPLOAD AREA (drop zone) */
+  .dropzone {
+    position: relative;
+    z-index: 2;
+    margin: 0 48px 60px;
+    padding: 60px 40px;
+    border: 2px dashed rgba(251,191,36,0.3);
+    border-radius: 4px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(220,38,38,0.03), rgba(251,191,36,0.03));
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .dropzone:hover, .dropzone.dragover {
+    border-color: var(--ember);
+    background: linear-gradient(135deg, rgba(220,38,38,0.08), rgba(251,191,36,0.08));
+  }
+  .dropzone-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--ember), var(--blood));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .dropzone-title {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .dropzone-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .dropzone-sub span { color: var(--ember); }
+
+  /* MODAL / LIGHTBOX */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,6,4,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+  .lightbox.active { display: flex; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .lightbox-content {
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    background: var(--bg-soft);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    max-height: 90vh;
+  }
+  .lightbox-image {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .lightbox-image img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    max-height: 90vh;
+  }
+  .lightbox-info {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+  .lightbox-info h2 {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--ember);
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(251,191,36,0.1);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .info-row span:first-child { color: var(--ink-soft); opacity: 0.6; }
+  .info-row span:last-child { color: var(--ember); }
+  .lightbox-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .lb-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid rgba(251,191,36,0.3);
+    color: var(--ink-soft);
+    padding: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .lb-btn:hover { border-color: var(--ember); color: var(--ember); }
+  .lb-btn.danger:hover { border-color: var(--blood); color: var(--blood); }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 44px; height: 44px;
+    background: var(--bg-soft);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 50%;
+    color: var(--ember);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    transition: all 0.3s;
+  }
+  .lightbox-close:hover { background: var(--blood); color: var(--ink); transform: rotate(90deg); }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 2;
+    padding: 60px 48px 40px;
+    border-top: 1px solid rgba(251,191,36,0.15);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 60px;
+    background: linear-gradient(180deg, transparent, rgba(69,10,10,0.3));
+  }
+  .foot-title {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 64px;
+    font-weight: 900;
+    font-style: italic;
+    line-height: 0.9;
+    background: linear-gradient(180deg, var(--ember), var(--blood));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .foot-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    max-width: 400px;
+    line-height: 1.6;
+  }
+  .foot-col h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--ember);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .foot-col a {
+    display: block;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 0;
+    transition: color 0.3s;
+  }
+  .foot-col a:hover { color: var(--ember); }
+
+  .foot-bottom {
+    position: relative;
+    z-index: 2;
+    padding: 20px 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-soft);
+    opacity: 0.5;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(251,191,36,0.1);
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    background: linear-gradient(135deg, var(--ember), var(--blood));
+    color: var(--bg-deep);
+    padding: 16px 24px;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 2000;
+    transform: translateY(150px);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 20px 40px rgba(220,38,38,0.4);
+  }
+  .toast.show { transform: translateY(0); }
+
+  /* ENTRY ANIMATIONS */
+  .photo {
+    animation: photoIn 0.6s ease backwards;
+  }
+  @keyframes photoIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .gallery { column-count: 3; }
+    .gallery.grid-view { grid-template-columns: repeat(3, 1fr); }
+    .hero { grid-template-columns: 1fr; gap: 40px; }
+    .lightbox-content { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    header { padding: 20px; }
+    nav { display: none; }
+    .hero, .toolbar, .gallery, .dropzone, footer, .foot-bottom { margin-left: 20px; margin-right: 20px; padding-left: 0; padding-right: 0; }
+    .hero { padding: 40px 0; }
+    .toolbar { padding: 20px; flex-direction: column; align-items: stretch; }
+    .gallery { column-count: 2; }
+    .gallery.grid-view { grid-template-columns: repeat(2, 1fr); }
+    footer { grid-template-columns: 1fr; gap: 32px; padding: 40px 20px; }
+    .foot-bottom { flex-direction: column; gap: 8px; padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div>
+      <div class="brand-text">INFERNO</div>
+      <div class="brand-sub">Vizuális Archívum · 2026</div>
+    </div>
+  </div>
+  <nav>
+    <a href="#galeria">Galéria</a>
+    <a href="#feltoltes">Feltöltés</a>
+    <a href="#albumok">Albumok</a>
+    <a href="#beallitas">Beállítások</a>
+  </nav>
+  <div class="counter" id="counter">— KÉP</div>
+</header>
+
+<section class="hero">
+  <div>
+    <h1 class="hero-title">
+      Tűz<span class="accent">&amp; pillanat</span>
+      <span class="line2">Galéria</span>
+    </h1>
+  </div>
+  <div class="hero-side">
+    <div class="hero-meta">◆ Album N°01 — Élő gyűjtemény</div>
+    <p class="hero-desc">
+      Egy személyes vizuális napló. Töltsd fel kedvenc pillanataidat, rendezd albumokba, és élvezd ahogy a fények és színek megtalálják a helyüket. Drag&amp;drop, lightbox, kedvencek — minden, ami egy modern albumtól elvárható.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Összes kép</div>
+      </div>
+      <div>
+        <div class="stat-num" id="stat-fav">0</div>
+        <div class="stat-label">Kedvenc</div>
+      </div>
+      <div>
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Pillanat</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toolbar" id="feltoltes">
+  <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+    <span>Új kép feltöltése</span>
+  </button>
+  <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+
+  <div class="filters" id="filters">
+    <button class="filter-chip active" data-filter="all">Mind</button>
+    <button class="filter-chip" data-filter="favorite">Kedvencek</button>
+    <button class="filter-chip" data-filter="taj">Tájkép</button>
+    <button class="filter-chip" data-filter="portre">Portré</button>
+    <button class="filter-chip" data-filter="varos">Város</button>
+    <button class="filter-chip" data-filter="absztrakt">Absztrakt</button>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" data-view="masonry" title="Mozaik nézet">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+    </button>
+    <button class="view-btn" data-view="grid" title="Rács nézet">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="dropzone" id="dropzone">
+  <div class="dropzone-icon">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0a0604" stroke-width="2.5">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+    </svg>
+  </div>
+  <div class="dropzone-title">Húzd ide a képeket</div>
+  <div class="dropzone-sub">vagy <span>kattints a feltöltéshez</span> · JPG, PNG, WEBP, GIF</div>
+</div>
+
+<section class="gallery" id="gallery"></section>
+
+<footer id="albumok">
+  <div>
+    <div class="foot-title">Ég<br>velünk.</div>
+    <p class="foot-sub">Minden képnek megvan a saját története. Ez a hely arra való, hogy soha ne tűnjön el. Készítsd, gyűjtsd, oszd meg — a tied marad.</p>
+  </div>
+  <div class="foot-col">
+    <h4>Albumok</h4>
+    <a href="#">Tájképek</a>
+    <a href="#">Portré sorozat</a>
+    <a href="#">Utazás</a>
+    <a href="#">Kísérletek</a>
+  </div>
+  <div class="foot-col">
+    <h4>Funkciók</h4>
+    <a href="#">Feltöltés</a>
+    <a href="#">Megosztás</a>
+    <a href="#">Letöltés</a>
+    <a href="#">Statisztika</a>
+  </div>
+</footer>
+
+<div class="foot-bottom">
+  <span>© 2026 Inferno Gallery</span>
+  <span>Crafted with fire 🔥</span>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <div class="lightbox-content">
+    <div class="lightbox-image"><img id="lbImg" src="" alt=""></div>
+    <div class="lightbox-info">
+      <h2 id="lbTitle">Kép címe</h2>
+      <div>
+        <div class="info-row"><span>Kategória</span><span id="lbCat">—</span></div>
+        <div class="info-row"><span>Dátum</span><span id="lbDate">—</span></div>
+        <div class="info-row"><span>Méret</span><span id="lbSize">—</span></div>
+        <div class="info-row"><span>Felbontás</span><span id="lbRes">—</span></div>
+        <div class="info-row"><span>Azonosító</span><span id="lbId">—</span></div>
+      </div>
+      <div class="lightbox-actions">
+        <button class="lb-btn" onclick="toggleFavFromLightbox()">★ Kedvenc</button>
+        <button class="lb-btn" onclick="downloadCurrent()">↓ Letöltés</button>
+        <button class="lb-btn danger" onclick="deleteCurrent()">✕ Törlés</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Kép feltöltve</div>
+
+<script>
+  // Demo placeholder photos with varied heights for masonry effect
+  const demoPhotos = [
+    { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800', title: 'Hajnali csúcs', cat: 'taj', date: '2026.03.14', h: 1.3 },
+    { src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800', title: 'Arany óra', cat: 'taj', date: '2026.02.28', h: 0.75 },
+    { src: 'https://images.unsplash.com/photo-1500051638674-ff996a0ec29e?w=800', title: 'Tűz az égen', cat: 'absztrakt', date: '2026.04.02', h: 1.5 },
+    { src: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800', title: 'Csendes völgy', cat: 'taj', date: '2026.01.19', h: 0.9 },
+    { src: 'https://images.unsplash.com/photo-1494500764479-0c8f2919a3d8?w=800', title: 'Vörös homok', cat: 'taj', date: '2026.03.07', h: 1.2 },
+    { src: 'https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=800', title: 'Ember sziluett', cat: 'portre', date: '2026.04.11', h: 1.4 },
+    { src: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800', title: 'Éjszakai város', cat: 'varos', date: '2026.02.14', h: 0.8 },
+    { src: 'https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=800', title: 'Lángoló horizont', cat: 'absztrakt', date: '2026.03.22', h: 1.1 },
+    { src: 'https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?w=800', title: 'Naplemente vízpart', cat: 'taj', date: '2026.04.08', h: 1.3 },
+    { src: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800', title: 'Óceán csendje', cat: 'taj', date: '2026.01.30', h: 0.85 },
+    { src: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800', title: 'Sárga hold', cat: 'absztrakt', date: '2026.02.05', h: 1.4 },
+    { src: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800', title: 'Hegyek hűvöse', cat: 'taj', date: '2026.03.18', h: 1.2 }
+  ];
+
+  let photos = [];
+  let currentFilter = 'all';
+  let currentView = 'masonry';
+  let currentPhotoId = null;
+  let idCounter = 1;
+
+  function init() {
+    demoPhotos.forEach(p => {
+      photos.push({
+        id: idCounter++,
+        src: p.src,
+        title: p.title,
+        cat: p.cat,
+        date: p.date,
+        size: (Math.random() * 4 + 1).toFixed(1) + ' MB',
+        favorite: Math.random() > 0.7
+      });
+    });
+    render();
+    updateStats();
+  }
+
+  function render() {
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = '';
+    const filtered = photos.filter(p => {
+      if (currentFilter === 'all') return true;
+      if (currentFilter === 'favorite') return p.favorite;
+      return p.cat === currentFilter;
+    });
+
+    filtered.forEach((p, i) => {
+      const el = document.createElement('div');
+      el.className = 'photo';
+      el.style.animationDelay = (i * 0.05) + 's';
+      el.onclick = () => openLightbox(p.id);
+      el.innerHTML = `
+        <div class="photo-tag">${catLabel(p.cat)}</div>
+        <button class="photo-fav ${p.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFav(${p.id})">
+          <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+        </button>
+        <img src="${p.src}" alt="${p.title}" loading="lazy">
+        <div class="photo-overlay">
+          <div class="photo-title">${p.title}</div>
+          <div class="photo-meta"><span>${catLabel(p.cat)}</span><span>${p.date}</span></div>
+        </div>
+      `;
+      gallery.appendChild(el);
+    });
+
+    document.getElementById('counter').textContent = filtered.length + ' KÉP';
+  }
+
+  function catLabel(c) {
+    return ({ taj: 'Tájkép', portre: 'Portré', varos: 'Város', absztrakt: 'Absztrakt' })[c] || c;
+  }
+
+  function updateStats() {
+    document.getElementById('stat-total').textContent = photos.length;
+    document.getElementById('stat-fav').textContent = photos.filter(p => p.favorite).length;
+  }
+
+  function toggleFav(id) {
+    const p = photos.find(x => x.id === id);
+    if (p) { p.favorite = !p.favorite; render(); updateStats(); showToast(p.favorite ? '★ Kedvenchez adva' : 'Eltávolítva a kedvencekből'); }
+  }
+
+  function toggleFavFromLightbox() {
+    if (currentPhotoId) toggleFav(currentPhotoId);
+  }
+
+  function openLightbox(id) {
+    const p = photos.find(x => x.id === id);
+    if (!p) return;
+    currentPhotoId = id;
+    document.getElementById('lbImg').src = p.src;
+    document.getElementById('lbTitle').textContent = p.title;
+    document.getElementById('lbCat').textContent = catLabel(p.cat);
+    document.getElementById('lbDate').textContent = p.date;
+    document.getElementById('lbSize').textContent = p.size;
+    document.getElementById('lbRes').textContent = '1920 × 1280';
+    document.getElementById('lbId').textContent = '#' + String(p.id).padStart(4, '0');
+    document.getElementById('lightbox').classList.add('active');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    currentPhotoId = null;
+  }
+
+  function deleteCurrent() {
+    if (!currentPhotoId) return;
+    photos = photos.filter(p => p.id !== currentPhotoId);
+    closeLightbox();
+    render();
+    updateStats();
+    showToast('Kép törölve');
+  }
+
+  function downloadCurrent() {
+    if (!currentPhotoId) return;
+    const p = photos.find(x => x.id === currentPhotoId);
+    const a = document.createElement('a');
+    a.href = p.src;
+    a.download = p.title + '.jpg';
+    a.target = '_blank';
+    a.click();
+    showToast('Letöltés indítva');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Filter chips
+  document.querySelectorAll('.filter-chip').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.filter-chip').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      currentFilter = b.dataset.filter;
+      render();
+    };
+  });
+
+  // View toggle
+  document.querySelectorAll('.view-btn').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.view-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      currentView = b.dataset.view;
+      document.getElementById('gallery').classList.toggle('grid-view', currentView === 'grid');
+    };
+  });
+
+  // File upload handling
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const cats = ['taj','portre','varos','absztrakt'];
+        photos.unshift({
+          id: idCounter++,
+          src: e.target.result,
+          title: file.name.replace(/\.[^.]+$/, '') || 'Új kép',
+          cat: cats[Math.floor(Math.random()*cats.length)],
+          date: new Date().toLocaleDateString('hu-HU').replace(/\. /g, '.').replace(/\.$/, ''),
+          size: (file.size / 1024 / 1024).toFixed(1) + ' MB',
+          favorite: false
+        });
+        render();
+        updateStats();
+        showToast('🔥 Kép feltöltve');
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('fileInput').onchange = e => handleFiles(e.target.files);
+
+  const dz = document.getElementById('dropzone');
+  dz.onclick = () => document.getElementById('fileInput').click();
+  ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('dragover'); }));
+  ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('dragover'); }));
+  dz.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+
+  // Lightbox close on backdrop
+  document.getElementById('lightbox').onclick = e => { if (e.target.id === 'lightbox') closeLightbox(); };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  init();
+</script>
+
+</body>
+</html>
